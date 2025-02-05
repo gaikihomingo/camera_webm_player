@@ -146,7 +146,7 @@ export default function CardPreview({ videoUrl }: { videoUrl: string }) {
     ]);
 
     return (
-        <div className="relative w-fit">
+        <div className="relative w-fit mx-auto">
             <video
                 autoPlay 
                 muted 
@@ -155,7 +155,7 @@ export default function CardPreview({ videoUrl }: { videoUrl: string }) {
                 crossOrigin="anonymous" 
                 ref={videoRef} 
                 src={videoUrl}
-                className="relative z-0"
+                className="relative z-0 invisible"
             />
             <canvas ref={canvasTopRef} className="relative z-10" />
             <canvas ref={canvasBottomRef} className="relative z-10" />
