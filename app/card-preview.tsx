@@ -50,11 +50,10 @@ interface WebGLCanvasState {
     webGLCanvas?: WebGLRenderer;
 }
 
-export default function CardPreview() {
+export default function CardPreview({ videoUrl }: { videoUrl: string }) {
     const videoRef = useRef<HTMLVideoElement>(null);
     const canvasTopRef = useRef<HTMLCanvasElement>(null);
     const canvasBottomRef = useRef<HTMLCanvasElement>(null);
-    const imageRef = useRef<HTMLImageElement>(null);
     const webGLStateRef = useRef<WebGLCanvasState>({});
 
     // WebGL initialization and rendering logic
@@ -155,7 +154,7 @@ export default function CardPreview() {
                 playsInline 
                 crossOrigin="anonymous" 
                 ref={videoRef} 
-                src="https://zingcam.cdn.flamapp.com/compressed/videos/679d0b7c88d1a4597a401dfe_108509206.mp4"
+                src={videoUrl}
                 className="relative z-0"
             />
             <canvas ref={canvasTopRef} className="relative z-10" />
