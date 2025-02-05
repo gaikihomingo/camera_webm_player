@@ -124,6 +124,62 @@
       .invisible {
         visibility: hidden;
       }
+
+      #bannerContainer {
+        position: fixed;
+        bottom: 24px;
+        width: calc(100% - 48px);
+        max-width: 600px;
+        left: 50%;
+        transform: translateX(-50%);
+        background: #0167a3;
+        color: white;
+        padding: 16px;
+        border-radius: 12px;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        z-index: 3;
+        box-sizing: border-box;
+      }
+
+      #bannerContainer > div:first-child {
+        flex: 1;
+        min-width: 0;
+        margin-right: 16px;
+      }
+
+      #bannerContainer p {
+        margin: 0;
+        font-weight: bold;
+        font-size: 16px;
+        text-overflow: ellipsis;
+        overflow: hidden;
+        white-space: nowrap;
+        width: 100%;
+      }
+
+      #bannerContainer span {
+        color: rgba(255, 255, 255, 0.5);
+        font-size: 14px;
+      }
+
+      #bannerContainer .arrow {
+        background: white;
+        width: 32px;
+        height: 32px;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        flex-shrink: 0;
+      }
+
+      #bannerContainer .arrow svg {
+        width: 16px;
+        height: 16px;
+        color: black;
+      }
     </style>
   </head>
   <body>
@@ -151,6 +207,18 @@
           crossorigin="anonymous"
         ></video>
         <button id="muteButton">Mute</button>
+        <div id="bannerContainer">
+          <div>
+            <p id="bannerText"></p>
+            <span id="bannerSubtext"></span>
+          </div>
+          <div class="arrow">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <line x1="5" y1="12" x2="19" y2="12"></line>
+              <polyline points="12 5 19 12 12 19"></polyline>
+            </svg>
+          </div>
+        </div>
 
         <script>
           var tf;
@@ -189,7 +257,11 @@
                   if (data.experiences[0].images.compressed) {
                     document.getElementById("previewImage").src = data.experiences[0].images.color_compressed;
                     webmVideo.src = data.experiences[0].videos.compressed;
-                    tf = data.experiences[0].variant.is_horizontal
+                    tf = data.experiences[0].variant.is_horizontal;
+                    if(data.experiences[0].ui_elements.banners) {
+                      document.getElementById("bannerText").textContent = data.experiences[0].ui_elements.banners.title;
+                      document.getElementById("bannerSubtext").textContent = data.experiences[0].ui_elements.banners.sub_title;
+                    }
                   }
                 }
               } catch (error) {
