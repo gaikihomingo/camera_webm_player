@@ -33,6 +33,7 @@
             max-height: 80%;
             z-index: 2;
             pointer-events: none;
+            background-color: transparent; /* Ensure video background is transparent */
         }
         #muteButton {
             position: fixed;
@@ -50,7 +51,7 @@
 </head>
 <body>
     <video id="camera" autoplay playsinline></video>
-    <video id="webmVideo" src="https://storage.googleapis.com/zingcam/compressed/videos/pnb_audio_out.webm" autoplay loop muted playsinline></video>
+    <video id="webmVideo" src="https://storage.googleapis.com/zingcam/compressed/videos/pnb_audio_out.webm" autoplay loop playsinline muted></video>
     <button id="muteButton">Unmute</button>
 
     <script>
