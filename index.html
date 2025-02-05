@@ -145,14 +145,12 @@
         <video
           id="webmVideo"
           src="https://zingcam.cdn.flamapp.com/compressed/videos/679d0b7c88d1a4597a401dfe_108509206.mp4"
-          autoplay
           loop
-          muted
           playsinline
           class="invisible"
           crossorigin="anonymous"
         ></video>
-        <button id="muteButton">Unmute</button>
+        <button id="muteButton">Mute</button>
 
         <script>
           const playButton = document.getElementById("playButton");
@@ -177,7 +175,8 @@
           playButton.addEventListener("click", async () => {
             landingContainer.style.display = "none";
             experienceContainer.style.display = "block";
-            webmVideo.muted = true;
+            // webmVideo.muted = true;
+            webmVideo.play();
             await startCamera();
             experienceContainer.classList.remove("invisible");
           });
