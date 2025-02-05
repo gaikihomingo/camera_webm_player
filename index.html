@@ -175,7 +175,7 @@
           playButton.addEventListener("click", async () => {
             landingContainer.style.display = "none";
             experienceContainer.style.display = "block";
-            // webmVideo.muted = true;
+            webmVideo.muted = false;
             webmVideo.play();
             await startCamera();
             experienceContainer.classList.remove("invisible");
