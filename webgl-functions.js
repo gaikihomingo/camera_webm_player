@@ -58,6 +58,7 @@ const initWebGL = (fragment) => {
 var tf = true; //TODO
 
 const drawOnCanvas = () => {
+  console.log("Tets");
   const video = document.getElementById("webmVideo");
 
   if (!video || !video.src.endsWith(".mp4")) return;

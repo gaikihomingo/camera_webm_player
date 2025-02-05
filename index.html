@@ -10,12 +10,53 @@
         margin: 0;
         overflow: hidden;
         display: flex;
+        flex-direction: column;
         justify-content: center;
         align-items: center;
-        height: 100vh;
-        background-color: black;
-        position: relative;
+        min-height: 100vh;
+        background: linear-gradient(135deg, #1a1a1a 0%, #2a2a2a 100%);
+        font-family: Arial, sans-serif;
       }
+
+      #landingContainer {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 24px;
+      }
+
+      #previewImage {
+        max-width: 80vw;
+        max-height: 60vh;
+        border-radius: 12px;
+        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+      }
+
+      #playButton {
+        padding: 16px 32px;
+        font-size: 18px;
+        background-color: #4caf50;
+        color: white;
+        border: none;
+        border-radius: 8px;
+        cursor: pointer;
+        transition: transform 0.2s, background-color 0.2s;
+      }
+
+      #playButton:hover {
+        background-color: #45a049;
+        transform: scale(1.05);
+      }
+
+      #experienceContainer {
+        display: none;
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100vw;
+        height: 100vh;
+      }
+
       #camera {
         position: fixed;
         top: 0;
@@ -25,6 +66,7 @@
         object-fit: cover;
         z-index: 0;
       }
+
       #canvasContainer {
         position: fixed;
         top: 50%;
@@ -37,17 +79,20 @@
         justify-content: center;
         align-items: center;
       }
+
       #canvasTopRef {
         position: absolute;
         max-width: 100%;
         max-height: 100%;
         z-index: 1;
       }
+
       #canvasBottomRef {
         position: absolute;
         max-width: 100%;
         max-height: 100%;
       }
+
       #webmVideo {
         position: fixed;
         top: 50%;
@@ -58,6 +103,7 @@
         z-index: 2;
         pointer-events: none;
       }
+
       #muteButton {
         position: fixed;
         top: 10px;
@@ -70,9 +116,11 @@
         font-size: 16px;
         z-index: 3;
       }
+
       .hidden {
         display: none !important;
       }
+
       .invisible {
         visibility: hidden;
       }
@@ -80,59 +128,82 @@
   </head>
   <body>
     <div id="app">
-      <video id="camera" autoplay playsinline></video>
-      <div id="canvasContainer">
-        <canvas id="canvasTopRef"></canvas>
-        <canvas id="canvasBottomRef" class="hidden"></canvas>
+      <div id="landingContainer">
+        <img
+          id="previewImage"
+          src="https://zingcam.cdn.flamapp.com/compressed/images/679d0b7c88d1a4597a401dfe_573466300.jpg"
+          alt="Experience Preview"
+        />
+        <button id="playButton">Start Experience</button>
       </div>
-      <video
-        id="webmVideo"
-        src="https://zingcam.cdn.flamapp.com/compressed/videos/679d0b7c88d1a4597a401dfe_108509206.mp4"
-        autoplay
-        loop
-        muted
-        playsinline
-        class="invisible"
-        crossorigin="anonymous"
-      ></video>
-      <button id="muteButton">Unmute</button>
+      <div id="experienceContainer" class="invisible">
+        <video id="camera" autoplay playsinline></video>
+        <div id="canvasContainer">
+          <canvas id="canvasTopRef"></canvas>
+          <canvas id="canvasBottomRef" class="hidden"></canvas>
+        </div>
+        <video
+          id="webmVideo"
+          src="https://zingcam.cdn.flamapp.com/compressed/videos/679d0b7c88d1a4597a401dfe_108509206.mp4"
+          autoplay
+          loop
+          muted
+          playsinline
+          class="invisible"
+          crossorigin="anonymous"
+        ></video>
+        <button id="muteButton">Unmute</button>
 
-      <script>
-        async function startCamera() {
-          try {
-            const stream = await navigator.mediaDevices.getUserMedia({
-              video: { facingMode: "environment" },
-            });
-            document.getElementById("camera").srcObject = stream;
-          } catch (error) {
-            console.error("Error accessing camera:", error);
+        <script>
+          const playButton = document.getElementById("playButton");
+          const landingContainer = document.getElementById("landingContainer");
+          const experienceContainer = document.getElementById(
+            "experienceContainer"
+          );
+          const webmVideo = document.getElementById("webmVideo");
+          const muteButton = document.getElementById("muteButton");
+
+          async function startCamera() {
+            try {
+              const stream = await navigator.mediaDevices.getUserMedia({
+                video: { facingMode: "environment" },
+              });
+              document.getElementById("camera").srcObject = stream;
+            } catch (error) {
+              console.error("Error accessing camera:", error);
+            }
           }
-        }
-        startCamera();
 
-        const webmVideo = document.getElementById("webmVideo");
-        const muteButton = document.getElementById("muteButton");
-        const canvasTop = document.getElementById("canvasTopRef");
+          playButton.addEventListener("click", async () => {
+            landingContainer.style.display = "none";
+            experienceContainer.style.display = "block";
+            webmVideo.muted = true;
+            await startCamera();
+            experienceContainer.classList.remove("invisible");
+          });
 
-        // Set initial canvas size
-        function resizeCanvas() {
-          const container = document.getElementById("canvasContainer");
-          const containerWidth = container.clientWidth;
-          const containerHeight = container.clientHeight;
+          const canvasTop = document.getElementById("canvasTopRef");
 
-          canvasTop.width = containerWidth;
-          canvasTop.height = containerHeight;
-        }
+          // Set initial canvas size
+          function resizeCanvas() {
+            const container = document.getElementById("canvasContainer");
+            const containerWidth = container.clientWidth;
+            const containerHeight = container.clientHeight;
 
-        // Call resize on load and window resize
-        window.addEventListener("load", resizeCanvas);
-        window.addEventListener("resize", resizeCanvas);
+            canvasTop.width = containerWidth;
+            canvasTop.height = containerHeight;
+          }
 
-        muteButton.addEventListener("click", () => {
-          webmVideo.muted = !webmVideo.muted;
-          muteButton.textContent = webmVideo.muted ? "Unmute" : "Mute";
-        });
-      </script>
+          // Call resize on load and window resize
+          window.addEventListener("load", resizeCanvas);
+          window.addEventListener("resize", resizeCanvas);
+
+          muteButton.addEventListener("click", () => {
+            webmVideo.muted = !webmVideo.muted;
+            muteButton.textContent = webmVideo.muted ? "Unmute" : "Mute";
+          });
+        </script>
+      </div>
     </div>
     <script type="module" src="./webgl-functions.js"></script>
   </body>
