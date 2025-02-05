@@ -153,6 +153,7 @@
         <button id="muteButton">Mute</button>
 
         <script>
+          var tf;
           const playButton = document.getElementById("playButton");
           const landingContainer = document.getElementById("landingContainer");
           const experienceContainer = document.getElementById(
@@ -171,6 +172,34 @@
               console.error("Error accessing camera:", error);
             }
           }
+
+          // Add function to check for short code and fetch experience
+          async function fetchExperience() {
+            const urlParams = new URLSearchParams(window.location.search);
+            const shortCode = urlParams.get('sh');
+            
+            if (shortCode) {
+              try {
+                const response = await fetch(`https://zingcam.prod.flamapp.com/campaign-svc/api/v1/campaigns/${shortCode}/experiences`);
+                const { data } = await response.json();
+                // Update experience data based on API response
+                if (data) {
+                  console.log(data);
+                  // Update preview image and video sources if they exist in the response
+                  if (data.experiences[0].images.compressed) {
+                    document.getElementById("previewImage").src = data.experiences[0].images.color_compressed;
+                    webmVideo.src = data.experiences[0].videos.compressed;
+                    tf = data.experiences[0].variant.is_horizontal
+                  }
+                }
+              } catch (error) {
+                console.error("Error fetching experience:", error);
+              }
+            }
+          }
+
+          // Call fetchExperience when the page loads
+          window.addEventListener('load', fetchExperience);
 
           playButton.addEventListener("click", async () => {
             landingContainer.style.display = "none";
