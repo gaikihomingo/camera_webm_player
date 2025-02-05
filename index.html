@@ -33,7 +33,16 @@
             max-height: 80%;
             z-index: 2;
             pointer-events: none;
-            background-color: transparent; /* Ensure video background is transparent */
+            mix-blend-mode: screen;
+            background: transparent;
+        }
+        #videoContainer {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            z-index: 2;
+            background: transparent;
         }
         #muteButton {
             position: fixed;
@@ -51,9 +60,17 @@
 </head>
 <body>
     <video id="camera" autoplay playsinline></video>
-    <video id="webmVideo" src="https://storage.googleapis.com/zingcam/compressed/videos/pnb_audio_out.webm" autoplay loop playsinline muted></video>
+    <div id="videoContainer">
+        <video 
+            id="webmVideo" 
+            src="https://storage.googleapis.com/zingcam/compressed/videos/pnb_audio_out.webm" 
+            autoplay 
+            loop 
+            playsinline 
+            muted
+        ></video>
+    </div>
     <button id="muteButton">Unmute</button>
-
     <script>
         async function startCamera() {
             try {
@@ -64,7 +81,7 @@
             }
         }
         startCamera();
-
+        
         const webmVideo = document.getElementById('webmVideo');
         const muteButton = document.getElementById('muteButton');
         
