@@ -12,6 +12,8 @@ export default function ARPreview({ videoUrl, bannerData }: {
     sub_title: string,
     redirect_url: string,
     show: boolean,
+    primary_color: string,
+    secondary_color: string,
   }
 }) {
   const [onboarding, setOnboarding] = useState(false);
@@ -26,7 +28,7 @@ export default function ARPreview({ videoUrl, bannerData }: {
 function OnboardingScreen({ setOnboarding }: { setOnboarding: (play: boolean) => void }) {
   return (
     <div className="flex flex-col items-center justify-center h-full w-full">
-      <Button className="font-bold text-xl" size="lg" onClick={() => setOnboarding(true)}>Play</Button>
+      <Button className="font-bold text-xl" size="lg" onClick={() => setOnboarding(true)}>Start Experience</Button>
     </div>
   );
 }
@@ -38,6 +40,8 @@ function FakeAR({
     sub_title: "",
     redirect_url: "",
     show: false,
+    primary_color: "",
+    secondary_color: "",
   } 
 }: {
   videoUrl: string, bannerData: {
@@ -45,6 +49,8 @@ function FakeAR({
     sub_title: string,
     redirect_url: string,
     show: boolean,
+    primary_color: string,
+    secondary_color: string,
   }
 }) {
   return (
@@ -58,6 +64,8 @@ function FakeAR({
         sub_title={bannerData.sub_title}
         redirect_url={bannerData.redirect_url}
         show={bannerData.show}
+        primary_color={bannerData.primary_color}
+        secondary_color={bannerData.secondary_color}
       />
     </div>
   );

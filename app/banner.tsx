@@ -6,27 +6,31 @@ export default function Banner({
     sub_title = "Get 10% discount",
     redirect_url = "/",
     show = true,
+    primary_color = "#CCFF00",
+    secondary_color = "#000000",
 }: {
     title?: string;
     sub_title?: string;
     redirect_url?: string;
     show: boolean;
+    primary_color?: string;
+    secondary_color?: string;
 }) {
 
-    if(!show) {
+    if (!show) {
         return null;
     }
 
     return (
         <div className="absolute bottom-0 z-20 left-0 w-full p-4 flex justify-center items-center">
-            <div className="right-0 grow max-w-xs bg-white p-4 shadow-lg flex justify-between rounded-xl items-center">
+            <div className="right-0 grow max-w-xs p-4 shadow-lg flex justify-between rounded-xl items-center" style={{ backgroundColor: secondary_color }}>
                 <div className="flex flex-col gap-0 items-start justify-center">
-                    <span className="text-lg font-bold">{title}</span>
-                    <span className="text-gray-500 text-sm">{sub_title}</span>
+                    <p className="text-lg font-bold" style={{ color: primary_color }}>{title}</p>
+                    <p className="text-sm" style={{ color: primary_color }}>{sub_title}</p>
                 </div>
-                <Link href={redirect_url}>
-                    <button className="bg-[#CCFF00] p-2 rounded-full">
-                        <CornerUpRight className="h-5 w-5" />
+                <Link href={redirect_url} target="_blank">
+                    <button className="p-2 rounded-full" style={{ backgroundColor: primary_color }}>
+                        <CornerUpRight className="h-5 w-5" style={{ color: secondary_color }} />
                     </button>
                 </Link>
             </div>

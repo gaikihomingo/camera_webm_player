@@ -1,7 +1,8 @@
 "use client";
 
 import WebGLRenderer from "@/utils/webgl";
-import { useCallback, useEffect, useRef } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
+import { Volume2, VolumeX } from "lucide-react";
 
 var tf = true;
 
@@ -55,6 +56,8 @@ export default function CardPreview({ videoUrl }: { videoUrl: string }) {
     const canvasTopRef = useRef<HTMLCanvasElement>(null);
     const canvasBottomRef = useRef<HTMLCanvasElement>(null);
     const webGLStateRef = useRef<WebGLCanvasState>({});
+
+    const [muted, setMuted] = useState(false);
 
     // WebGL initialization and rendering logic
     const initWebGL = useCallback(
@@ -149,7 +152,7 @@ export default function CardPreview({ videoUrl }: { videoUrl: string }) {
         <div className="w-fit mx-auto h-full absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2">
             <video
                 autoPlay 
-                muted 
+                muted={muted}
                 loop 
                 playsInline 
                 crossOrigin="anonymous" 
@@ -159,6 +162,16 @@ export default function CardPreview({ videoUrl }: { videoUrl: string }) {
             />
             <canvas ref={canvasTopRef} className="relative z-10" />
             <canvas ref={canvasBottomRef} className="relative z-10" />
+            <button
+                onClick={() => setMuted(!muted)}
+                className="absolute top-4 right-4 z-20 p-2 rounded-full bg-black/50 hover:bg-black/70 transition-colors"
+            >
+                {muted ? (
+                    <VolumeX className="w-5 h-5 text-white" />
+                ) : (
+                    <Volume2 className="w-5 h-5 text-white" />
+                )}
+            </button>
         </div>
     )
 }
