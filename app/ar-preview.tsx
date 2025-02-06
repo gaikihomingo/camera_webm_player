@@ -6,12 +6,19 @@ import CameraFrame from "./camera-frame";
 import CardPreview from "./card-preview";
 import { Button } from "@/components/ui/button";
 
-export default function ARPreview() {
+export default function ARPreview({ videoUrl, bannerData }: {
+  videoUrl: string, bannerData: {
+    title: string,
+    sub_title: string,
+    redirect_url: string,
+    show: boolean,
+  }
+}) {
   const [onboarding, setOnboarding] = useState(false);
 
   return (
     <>
-      {onboarding ? <FakeAR /> : <OnboardingScreen setOnboarding={setOnboarding} />}
+      {onboarding ? <FakeAR videoUrl={videoUrl} bannerData={bannerData} /> : <OnboardingScreen setOnboarding={setOnboarding} />}
     </>
   );
 };
@@ -24,18 +31,33 @@ function OnboardingScreen({ setOnboarding }: { setOnboarding: (play: boolean) =>
   );
 }
 
-function FakeAR() {
+function FakeAR({ 
+  videoUrl, 
+  bannerData = {
+    title: "",
+    sub_title: "",
+    redirect_url: "",
+    show: false,
+  } 
+}: {
+  videoUrl: string, bannerData: {
+    title: string,
+    sub_title: string,
+    redirect_url: string,
+    show: boolean,
+  }
+}) {
   return (
     <div className="h-full w-full">
       <CameraFrame />
-      <CardPreview 
-        videoUrl={"https://zingcam.cdn.flamapp.com/compressed/videos/679d0b7c88d1a4597a401dfe_108509206.mp4"} 
+      <CardPreview
+        videoUrl={videoUrl}
       />
-      <Banner 
-        title="Register now"
-        sub_title="Get 10% discount"
-        redirect_url="/"
-        show={true}
+      <Banner
+        title={bannerData.title}
+        sub_title={bannerData.sub_title}
+        redirect_url={bannerData.redirect_url}
+        show={bannerData.show}
       />
     </div>
   );
