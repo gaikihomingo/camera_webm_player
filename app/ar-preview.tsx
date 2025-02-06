@@ -54,7 +54,7 @@ function FakeAR({
   }
 }) {
   return (
-    <div className="h-full w-full">
+    <div className="relative h-full w-full">
       <CameraFrame />
       <CardPreview
         videoUrl={videoUrl}
