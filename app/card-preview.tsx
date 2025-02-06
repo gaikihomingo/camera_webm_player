@@ -1,8 +1,8 @@
 "use client";
 
 import WebGLRenderer from "@/utils/webgl";
-import { useCallback, useEffect, useRef, useState } from "react";
 import { Volume2, VolumeX } from "lucide-react";
+import { useCallback, useEffect, useRef, useState } from "react";
 
 var tf = true;
 
@@ -47,131 +47,121 @@ const fragmentShaderHorizontalSource = `
 `;
 
 interface WebGLCanvasState {
-    animationFrameId?: number;
-    webGLCanvas?: WebGLRenderer;
+  animationFrameId?: number;
+  webGLCanvas?: WebGLRenderer;
 }
 
 export default function CardPreview({ videoUrl }: { videoUrl: string }) {
-    const videoRef = useRef<HTMLVideoElement>(null);
-    const canvasTopRef = useRef<HTMLCanvasElement>(null);
-    const canvasBottomRef = useRef<HTMLCanvasElement>(null);
-    const webGLStateRef = useRef<WebGLCanvasState>({});
+  const videoRef = useRef<HTMLVideoElement>(null);
+  const canvasTopRef = useRef<HTMLCanvasElement>(null);
+  const canvasBottomRef = useRef<HTMLCanvasElement>(null);
+  const webGLStateRef = useRef<WebGLCanvasState>({});
 
-    const [muted, setMuted] = useState(false);
+  const [muted, setMuted] = useState(false);
 
-    // WebGL initialization and rendering logic
-    const initWebGL = useCallback(
-        (fragment: string): WebGLRenderer | undefined => {
-            const canvasTop = canvasTopRef.current;
-            const canvasBottom = canvasBottomRef.current;
-            const video = videoRef.current;
+  // WebGL initialization and rendering logic
+  const initWebGL = useCallback(
+    (fragment: string): WebGLRenderer | undefined => {
+      const canvasTop = canvasTopRef.current;
+      const canvasBottom = canvasBottomRef.current;
+      const video = videoRef.current;
 
-            if (!canvasTop || !canvasBottom || !video) return;
+      if (!canvasTop || !canvasBottom || !video) return;
 
-            const webGLCanvas = new WebGLRenderer(
-                canvasTop,
-                vertexShaderSource,
-                fragment
-            );
-            return webGLCanvas;
-        },
-        []
-    );
+      const webGLCanvas = new WebGLRenderer(
+        canvasTop,
+        vertexShaderSource,
+        fragment
+      );
+      return webGLCanvas;
+    },
+    []
+  );
 
-    useEffect(() => {
-        const video = videoRef.current;
-        if (!video || !video.src.endsWith(".mp4")) return;
+  useEffect(() => {
+    const video = videoRef.current;
+    if (!video || !video.src.endsWith(".mp4")) return;
 
-        const wbglCanvasHori = initWebGL(fragmentShaderHorizontalSource);
-        const wbglCanvasVerti = initWebGL(fragmentShaderSource);
+    const wbglCanvasHori = initWebGL(fragmentShaderHorizontalSource);
+    const wbglCanvasVerti = initWebGL(fragmentShaderSource);
 
-        if (!wbglCanvasHori || !wbglCanvasVerti) return;
+    if (!wbglCanvasHori || !wbglCanvasVerti) return;
 
-        let animationFrameId: number;
-        const frameRate = 18;
-        let lastTime = 0;
-        tf = true;
+    let animationFrameId: number;
+    const frameRate = 18;
+    let lastTime = 0;
+    tf = true;
 
-        const draw = (time: number) => {
-            if (video.paused || video.ended) return;
+    const draw = (time: number) => {
+      if (video.paused || video.ended) return;
 
-            const elapsed = time - lastTime;
-            const interval = 1000 / frameRate;
+      const elapsed = time - lastTime;
+      const interval = 1000 / frameRate;
 
-            if (elapsed > interval) {
-                lastTime = time;
-                if (tf) {
-                    wbglCanvasHori.setTexture(video);
-                    wbglCanvasHori.render(
-                        video.videoWidth,
-                        video.videoHeight,
-                        tf
-                    );
-                } else {
-                    wbglCanvasVerti.setTexture(video);
-                    wbglCanvasVerti.render(
-                        video.videoWidth,
-                        video.videoHeight,
-                        tf
-                    );
-                }
-            }
-            webGLStateRef.current.animationFrameId =
-                requestAnimationFrame(draw);
-        };
+      if (elapsed > interval) {
+        lastTime = time;
+        if (tf) {
+          wbglCanvasHori.setTexture(video);
+          wbglCanvasHori.render(video.videoWidth, video.videoHeight, tf);
+        } else {
+          wbglCanvasVerti.setTexture(video);
+          wbglCanvasVerti.render(video.videoWidth, video.videoHeight, tf);
+        }
+      }
+      webGLStateRef.current.animationFrameId = requestAnimationFrame(draw);
+    };
 
-        const handlePlay = () => {
-            webGLStateRef.current.animationFrameId =
-                requestAnimationFrame(draw);
-        };
+    const handlePlay = () => {
+      webGLStateRef.current.animationFrameId = requestAnimationFrame(draw);
+    };
 
-        const handlePause = () => {
-            if (webGLStateRef.current.animationFrameId) {
-                cancelAnimationFrame(webGLStateRef.current.animationFrameId);
-            }
-        };
+    const handlePause = () => {
+      if (webGLStateRef.current.animationFrameId) {
+        cancelAnimationFrame(webGLStateRef.current.animationFrameId);
+      }
+    };
 
-        video.addEventListener("play", handlePlay);
-        video.addEventListener("pause", handlePause);
+    video.addEventListener("play", handlePlay);
+    video.addEventListener("pause", handlePause);
 
-        return () => {
-            video.removeEventListener("play", () => {
-                animationFrameId = requestAnimationFrame(draw);
-            });
-            video.removeEventListener("pause", () => {
-                cancelAnimationFrame(animationFrameId);
-            });
-            cancelAnimationFrame(animationFrameId);
-        };
-    }, [
-        videoRef.current,
-        canvasTopRef.current,
-    ]);
+    return () => {
+      video.removeEventListener("play", () => {
+        animationFrameId = requestAnimationFrame(draw);
+      });
+      video.removeEventListener("pause", () => {
+        cancelAnimationFrame(animationFrameId);
+      });
+      cancelAnimationFrame(animationFrameId);
+    };
+  }, [videoRef.current, canvasTopRef.current]);
 
-    return (
-        <div className="w-fit mx-auto h-full absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2">
-            <video
-                autoPlay 
-                muted={muted}
-                loop 
-                playsInline 
-                crossOrigin="anonymous" 
-                ref={videoRef} 
-                src={videoUrl}
-                className="relative z-0 invisible"
-            />
-            <canvas ref={canvasTopRef} className="relative z-10" />
-            <canvas ref={canvasBottomRef} className="relative z-10" />
-            <button
-                onClick={() => setMuted(!muted)}
-                className="absolute top-4 right-4 z-20 p-2 rounded-full bg-black/50 hover:bg-black/70 transition-colors"
-            >
-                {muted ? (
-                    <VolumeX className="w-5 h-5 text-white" />
-                ) : (
-                    <Volume2 className="w-5 h-5 text-white" />
-                )}
-            </button>
-        </div>
-    )
+  return (
+    <div className="w-fit mx-auto h-full absolute top-0 left-0">
+      <video
+        autoPlay
+        muted={muted}
+        loop
+        playsInline
+        crossOrigin="anonymous"
+        ref={videoRef}
+        src={videoUrl}
+        className="relative z-0 invisible"
+      />
+      <canvas
+        ref={canvasTopRef}
+        className="absolute z-10 top-1/4 left-1/2 -translate-x-1/2 -translate-y-1/4"
+      />
+      <canvas ref={canvasBottomRef} className="relative z-10" />
+      <button
+        onClick={() => setMuted(!muted)}
+        className="absolute top-4 right-4 z-20 p-2 rounded-full bg-black/50 hover:bg-black/70 transition-colors"
+      >
+        {muted ? (
+          <VolumeX className="w-5 h-5 text-white" />
+        ) : (
+          <Volume2 className="w-5 h-5 text-white" />
+        )}
+      </button>
+    </div>
+  );
 }
