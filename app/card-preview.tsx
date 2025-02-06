@@ -102,10 +102,10 @@ export default function CardPreview({ videoUrl }: { videoUrl: string }) {
         lastTime = time;
         if (tf) {
           wbglCanvasHori.setTexture(video);
-          wbglCanvasHori.render(video.videoWidth, video.videoHeight, tf);
+          wbglCanvasHori.render(video.videoWidth * 0.8, video.videoHeight * 0.8, tf);
         } else {
           wbglCanvasVerti.setTexture(video);
-          wbglCanvasVerti.render(video.videoWidth, video.videoHeight, tf);
+          wbglCanvasVerti.render(video.videoWidth * 0.8, video.videoHeight * 0.8, tf);
         }
       }
       webGLStateRef.current.animationFrameId = requestAnimationFrame(draw);
@@ -149,7 +149,7 @@ export default function CardPreview({ videoUrl }: { videoUrl: string }) {
       />
       <canvas
         ref={canvasTopRef}
-        className="absolute z-10 top-1/4 left-1/2 -translate-x-1/2 -translate-y-1/4"
+        className="absolute z-10 top-1/3 left-1/2 -translate-x-1/2 -translate-y-1/3 w-4/5"
       />
       <canvas ref={canvasBottomRef} className="relative z-10" />
       <button
